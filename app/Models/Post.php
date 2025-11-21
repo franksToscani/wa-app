@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class category_types extends Model
+class Post extends Model
 {
     //
 }

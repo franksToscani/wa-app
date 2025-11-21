@@ -24,4 +24,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/_debug-db', function () {
+    return [
+        'default_connection' => config('database.default'),
+        'database' => config('database.connections.' . config('database.default') . '.database'),
+    ];
+});
 require __DIR__.'/auth.php';
