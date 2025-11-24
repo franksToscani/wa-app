@@ -25,14 +25,16 @@ const props = defineProps({
                             <h3 class="text-lg font-semibold">Ultimi post</h3>
                             <div class="mt-4 space-y-4">
                                 <template v-if="props.posts.length">
-                                    <div v-for="post in props.posts" :key="post.id" class="border rounded-md p-3">
-                                        <div class="flex items-start justify-between">
-                                            <div>
-                                                <h4 class="font-semibold text-neutral-900">{{ post.title }}</h4>
-                                                <p class="text-sm text-neutral-600 mt-1">{{ post.excerpt || '' }}</p>
-                                            </div>
-                                            <div class="text-sm text-neutral-500">{{ new Date(post.created_at).toLocaleDateString() }}</div>
-                                        </div>
+                                    <div v-for="post in props.posts" :key="post.id">
+                                        <Card :title="post.title" class="mb-3">
+                                            <p class="text-sm text-neutral-600 mt-1">{{ post.excerpt || '' }}</p>
+                                            <template #footer>
+                                                <div class="flex items-center justify-between">
+                                                    <small class="text-sm text-neutral-500">{{ new Date(post.created_at).toLocaleDateString() }}</small>
+                                                    <PButton icon="pi pi-eye" class="p-button-text" label="Apri" />
+                                                </div>
+                                            </template>
+                                        </Card>
                                     </div>
                                 </template>
                                 <template v-else>
@@ -48,14 +50,16 @@ const props = defineProps({
                             <h3 class="text-lg font-semibold">Prodotti recenti</h3>
                             <div class="mt-4 space-y-4">
                                 <template v-if="props.products.length">
-                                    <div v-for="product in props.products" :key="product.id" class="border rounded-md p-3">
-                                        <div class="flex items-start justify-between">
-                                            <div>
-                                                <h4 class="font-semibold text-neutral-900">{{ product.name }}</h4>
-                                                <p class="text-sm text-neutral-600 mt-1">Prezzo: {{ product.price ?? '—' }}</p>
-                                            </div>
-                                            <div class="text-sm text-neutral-500">{{ new Date(product.created_at).toLocaleDateString() }}</div>
-                                        </div>
+                                    <div v-for="product in props.products" :key="product.id">
+                                        <Card :title="product.name" class="mb-3">
+                                            <p class="text-sm text-neutral-600 mt-1">Prezzo: {{ product.price ?? '—' }}</p>
+                                            <template #footer>
+                                                <div class="flex items-center justify-between">
+                                                    <small class="text-sm text-neutral-500">{{ new Date(product.created_at).toLocaleDateString() }}</small>
+                                                    <PButton icon="pi pi-shopping-cart" class="p-button-text" label="Apri" />
+                                                </div>
+                                            </template>
+                                        </Card>
                                     </div>
                                 </template>
                                 <template v-else>
