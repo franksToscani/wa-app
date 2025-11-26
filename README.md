@@ -106,3 +106,4 @@ php artisan test --no-coverage
 If you'd like, I can prepare a follow-up PR that keeps production-targeted migrations unchanged and adds a
 small `migrations/testing` step that runs only for SQLite test environments. For now this branch contains the
 compatibility edits so local tests pass quickly.
+# wa-app-Softweb

@@ -1,7 +1,9 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
-import { Head } from '@inertiajs/vue3'
+import { Head, Link } from '@inertiajs/vue3'
 import { ref } from 'vue'
+import PrimaryButton from '@/Components/PrimaryButton.vue'
+
 
 const props = defineProps({
     posts: { type: Array, default: () => [] },
@@ -27,75 +29,49 @@ function closeDialog() {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">Dashboard</h2>
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-semibold leading-tight text-gray-800">Dashboard</h2>
+                <div class="flex items-center gap-2">
+                    <Link :href="route('admin.posts.create')">
+                        <PrimaryButton>New Post</PrimaryButton>
+                    </Link>
+                </div>
+            </div>
         </template>
 
-        <div class="py-8">
-            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="grid gap-6 lg:grid-cols-2">
-                    <!-- Recent posts -->
-                    <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                        <div class="p-6">
-                            <h3 class="text-lg font-semibold">Ultimi post</h3>
-                            <div class="mt-4 space-y-4">
-                                <template v-if="props.posts.length">
-                                    <div v-for="post in props.posts" :key="post.id">
-                                        <Card :title="post.title" class="mb-3">
-                                            <p class="text-sm text-neutral-600 mt-1">{{ post.excerpt || '' }}</p>
-                                            <template #footer>
-                                                <div class="flex items-center justify-between">
-                                                    <small class="text-sm text-neutral-500">{{ new Date(post.created_at).toLocaleDateString() }}</small>
-                                                    <PButton icon="pi pi-eye" class="p-button-text" label="Apri" @click="openPost(post)" />
-                                                </div>
-                                            </template>
-                                        </Card>
-                                    </div>
-                                </template>
-                                <template v-else>
-                                    <div class="text-sm text-neutral-500">Nessun post trovato.</div>
-                                </template>
-                            </div>
-                        </div>
-                    </div>
+        <div class="p-6">
+            <div v-if="!posts || posts.length === 0" class="text-center text-sm text-gray-500">
+                Nessun post trovato. Crea il primo post premendo "New Post".
+            </div>
 
-                    <!-- Recent products -->
-                    <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                        <div class="p-6">
-                            <h3 class="text-lg font-semibold">Prodotti recenti</h3>
-                            <div class="mt-4 space-y-4">
-                                <template v-if="props.products.length">
-                                    <div v-for="product in props.products" :key="product.id">
-                                        <Card :title="product.name" class="mb-3">
-                                            <p class="text-sm text-neutral-600 mt-1">Prezzo: {{ product.price ?? '—' }}</p>
-                                            <template #footer>
-                                                <div class="flex items-center justify-between">
-                                                    <small class="text-sm text-neutral-500">{{ new Date(product.created_at).toLocaleDateString() }}</small>
-                                                    <PButton icon="pi pi-shopping-cart" class="p-button-text" label="Apri" />
-                                                </div>
-                                            </template>
-                                        </Card>
-                                    </div>
-                                </template>
-                                <template v-else>
-                                    <div class="text-sm text-neutral-500">Nessun prodotto trovato.</div>
-                                </template>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div v-else class="overflow-hidden rounded-lg border">
+                <table class="min-w-full divide-y">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500">ID</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500">Titolo</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500">Estratto</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500">Creato il</th>
+                            <th class="px-4 py-2 text-right text-xs font-medium text-gray-500">Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y bg-white">
+                        <tr v-for="post in posts" :key="post.id">
+                            <td class="px-4 py-3 text-sm text-gray-700">{{ post.id }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-900">{{ post.title }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-600">{{ post.excerpt || '-' }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-500">{{ post.created_at ? new Date(post.created_at).toLocaleString() : '-' }}</td>
+                            <td class="px-4 py-3 text-sm text-right">
+                                <div class="inline-flex items-center gap-2">
+                                    <Link :href="route('admin.posts.edit', post.id)" class="text-sm text-primary-600 hover:underline">Modifica</Link>
+                                    <Link :href="route('admin.posts.show', post.id)" class="text-sm text-neutral-600 hover:underline">Visualizza</Link>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-        <!-- Post preview dialog -->
-        <Dialog v-model:visible="showDialog" :header="selectedPost ? selectedPost.title : ''" :modal="true" :style="{ width: '50vw' }">
-            <div v-if="selectedPost">
-                <p class="text-sm text-neutral-700" v-html="selectedPost.content"></p>
-            </div>
-            <template #footer>
-                <div class="text-right">
-                    <PButton label="Chiudi" class="p-button-text" @click="closeDialog" />
-                </div>
-            </template>
-        </Dialog>
-        
+
     </AuthenticatedLayout>
-</template>
+    </template>
